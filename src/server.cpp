@@ -37,7 +37,6 @@ int main(void)
         getline(cin, command);
         logger.log(command);
 
-
         auto words_begin = std::sregex_iterator(command.begin(), command.end(), delim);
         auto words_end = std::sregex_iterator();
         for (std::sregex_iterator i = words_begin; i != words_end; ++i)

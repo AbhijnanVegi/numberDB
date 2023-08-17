@@ -1,6 +1,9 @@
 #include<iostream>
 #include<bits/stdc++.h>
 #include<sys/stat.h> 
+#include <sys/mman.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include<fstream>
 
 using namespace std;
