@@ -1,0 +1,7 @@
+LOAD Student
+LOAD Advisor
+FR <- CROSS Student, Advisor
+FT <- SELECT Advisor_id == Adv_Id FROM FR
+T <- SELECT Adv_sex != Stud_sex FROM FT
+T2 <- PROJECT Stud_Id, Adv_Id, Stud_sex, Adv_sex FROM T
+PRINT T2

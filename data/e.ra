@@ -1,0 +1,9 @@
+LOAD Student
+LOAD Marks
+C <- CROSS Student, Marks
+FT <- SELECT Student_Stud_Id == Marks_Stud_Id FROM C
+A1 <- SELECT Advisor_id == 1 FROM FT
+MTH <- SELECT Maths_marks > 70 FROM A1
+T <- PROJECT Student_Stud_Id, Maths_marks FROM MTH
+RENAME Student_Stud_Id TO Stud_Id FROM T
+PRINT T
