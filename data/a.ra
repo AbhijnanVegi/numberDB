@@ -1,4 +1,4 @@
 LOAD Student
-T <- SELECT Stud_sex == 0 FROM Student
-T2 <- PROJECT Stud_Id, Stud_age FROM T
-PRINT T2
+AT <- SELECT Stud_sex == 0 FROM Student
+AT2 <- PROJECT Stud_Id, Stud_age FROM AT
+PRINT AT2

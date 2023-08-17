@@ -1,5 +1,5 @@
 LOAD Student
-T <- SELECT Stud_sex == 1 FROM Student
-T2 <- SELECT Stud_age > 16 FROM T
-T3 <- PROJECT Stud_Id, Stud_age FROM T2
-PRINT T3
+BT <- SELECT Stud_sex == 1 FROM Student
+BT2 <- SELECT Stud_age > 16 FROM BT
+BT3 <- PROJECT Stud_Id, Stud_age FROM BT2
+PRINT BT3

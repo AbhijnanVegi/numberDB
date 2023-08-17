@@ -1,10 +1,10 @@
 LOAD Student
 LOAD Marks
-C <- CROSS Student, Marks
-FT <- SELECT Student_Stud_Id == Marks_Stud_Id FROM C
-A1 <- SELECT Advisor_id == 2 FROM FT
-MTH <- SELECT Maths_marks > 90 FROM A1
-T <- PROJECT Student_Stud_Id FROM MTH
-RENAME Student_Stud_Id TO Stud_Id FROM T
-PRINT T
+HC <- CROSS Student, Marks
+HFT <- SELECT Student_Stud_Id == Marks_Stud_Id FROM HC
+HA1 <- SELECT Advisor_id == 2 FROM HFT
+HMTH <- SELECT Maths_marks > 90 FROM HA1
+HT <- PROJECT Student_Stud_Id FROM HMTH
+RENAME Student_Stud_Id TO Stud_Id FROM HT
+PRINT HT
 

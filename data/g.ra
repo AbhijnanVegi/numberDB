@@ -1,7 +1,7 @@
 LOAD Student
 LOAD Advisor
-C <-  CROSS Student, Advisor
-FT <- SELECT Adv_Id == Advisor_id FROM C
-T1 <- SELECT Adv_age > 40 FROM FT
-T <- PROJECT Stud_Id, Adv_Id FROM T1
-PRINT T
+GC <-  CROSS Student, Advisor
+GFT <- SELECT Adv_Id == Advisor_id FROM GC
+GT1 <- SELECT Adv_age > 40 FROM GFT
+GT <- PROJECT Stud_Id, Adv_Id FROM GT1
+PRINT GT

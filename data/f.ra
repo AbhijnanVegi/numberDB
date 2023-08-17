@@ -1,5 +1,5 @@
 LOAD Advisor
-T1 <- SELECT Yrs_of_exp <= 4 FROM Advisor
-T2 <- SELECT Salary > 300000 FROM T1
-T <- PROJECT Adv_Id, Yrs_of_exp FROM T2
-PRINT T
+FT1 <- SELECT Yrs_of_exp <= 4 FROM Advisor
+FT2 <- SELECT Salary > 300000 FROM FT1
+FT <- PROJECT Adv_Id, Yrs_of_exp FROM FT2
+PRINT FT
