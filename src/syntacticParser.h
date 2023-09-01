@@ -1,4 +1,5 @@
 #include "tableCatalogue.h"
+#include "matrixCatalogue.h"
 
 using namespace std;
 
@@ -18,7 +19,9 @@ enum QueryType
     SELECTION,
     SORT,
     SOURCE,
-    UNDETERMINED
+    UNDETERMINED,
+    EXPORT_MATRIX,
+    PRINT_MATRIX
 };
 
 enum BinaryOperator
@@ -120,6 +123,6 @@ bool syntacticParseRENAME();
 bool syntacticParseSELECTION();
 bool syntacticParseSORT();
 bool syntacticParseSOURCE();
-
+bool syntacticParsePRINT_MATRIX();
 bool isFileExists(string tableName);
 bool isQueryFile(string fileName);
