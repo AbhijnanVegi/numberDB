@@ -39,6 +39,7 @@ public:
     bool load();
     void print();
     void makePermanent();
+    void rename(string newMatrixName);
     bool isPermanent();
     void getNextPage(Cursor *cursor);
     void getPage(Cursor *cursor, int pageIndex);

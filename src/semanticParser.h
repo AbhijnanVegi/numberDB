@@ -19,3 +19,4 @@ bool semanticParseSOURCE();
 bool semanticParseLOAD_MATRIX();
 bool semanticParsePRINT_MATRIX();
 bool semanticParseEXPORT_MATRIX();
+bool semanticParseRENAME_MATRIX();

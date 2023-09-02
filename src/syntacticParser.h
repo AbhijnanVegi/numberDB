@@ -21,7 +21,8 @@ enum QueryType
     SOURCE,
     UNDETERMINED,
     EXPORT_MATRIX,
-    PRINT_MATRIX
+    PRINT_MATRIX,
+    RENAME_MATRIX
 };
 
 enum BinaryOperator
@@ -104,6 +105,8 @@ public:
 
     string sourceFileName = "";
 
+    string renameFromMatrixName = "";
+    string renameToMatrixName = "";
     string transposeResultRelationName = "";
 
     ParsedQuery();
@@ -128,5 +131,6 @@ bool syntacticParseSOURCE();
 bool syntacticParseLOAD_MATRIX();
 bool syntacticParsePRINT_MATRIX();
 bool syntacticParseEXPORT_MATRIX();
+bool syntacticParseRENAME_MATRIX();
 bool isFileExists(string tableName);
 bool isQueryFile(string fileName);

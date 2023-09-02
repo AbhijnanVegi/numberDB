@@ -15,10 +15,12 @@ bool syntacticParse()
     {
         if (possibleQueryType == "LOAD")
             return syntacticParseLOAD_MATRIX();
-        if (possibleQueryType == "PRINT")
+        else if (possibleQueryType == "PRINT")
             return syntacticParsePRINT_MATRIX();
-        if (possibleQueryType == "EXPORT")
+        else if (possibleQueryType == "EXPORT")
             return syntacticParseEXPORT_MATRIX();
+        else if (possibleQueryType == "RENAME")
+            return syntacticParseRENAME_MATRIX();
         else
         {
             cout << "SYNTAX ERROR" << endl;

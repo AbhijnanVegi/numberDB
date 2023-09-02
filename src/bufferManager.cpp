@@ -134,3 +134,11 @@ void BufferManager::deleteFile(string tableName, int pageIndex)
     string fileName = "../data/temp/"+tableName + "_Page" + to_string(pageIndex);
     this->deleteFile(fileName);
 }
+
+void BufferManager::renameFile(string oldName, string newName)
+{
+    logger.log("BufferManager::renameFile");
+    if (rename(oldName.c_str(), newName.c_str()))
+        logger.log("BufferManager::renameFile: Err");
+        else logger.log("BufferManager::renameFile: Success");
+}

@@ -211,6 +211,17 @@ void Matrix::makePermanent() {
     fout.close();
 }
 
+void Matrix::rename(string newMatrixName) {
+    logger.log("Matrix::rename");
+    for(int i = 0; i < blockCount; i++) {
+        string oldPageName = "../data/temp/" + this->matrixName + "_Page" + to_string(i);
+        string newPageName = "../data/temp/" + newMatrixName + "_Page" + to_string(i);
+        bufferManager.renameFile(oldPageName, newPageName);
+        bufferManager.deleteFile(oldPageName);
+    }
+    this->matrixName = newMatrixName;
+}
+
 /**
  * @brief Function to check if matrix is already exported
  *

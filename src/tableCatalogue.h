@@ -31,6 +31,7 @@ public:
     // Matrix functions
     void insertMatrix(Matrix* matrix);
     void deleteMatrix(string matrixName);
+    void renameMatrix(string matrixName, string newMatrixName);
     Matrix* getMatrix(string matrixName);
     bool isMatrix(string matrixName);
     void printMatrix();

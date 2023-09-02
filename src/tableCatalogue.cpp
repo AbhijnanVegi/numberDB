@@ -73,6 +73,16 @@ void TableCatalogue::deleteMatrix(string matrixName)
     delete this->matrices[matrixName];
     this->matrices.erase(matrixName);
 }
+
+void TableCatalogue::renameMatrix(string matrixName, string newMatrixName)
+{
+    logger.log("TableCatalogue::renameMatrix");
+    Matrix* matrix = this->matrices[matrixName];
+    matrix->rename(newMatrixName);
+    this->matrices.erase(matrixName);
+    this->matrices[newMatrixName] = matrix;
+}
+
 Matrix* TableCatalogue::getMatrix(string matrixName)
 {
     logger.log("TableCatalogue::getMatrix");

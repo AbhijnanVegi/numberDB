@@ -18,6 +18,20 @@ bool syntacticParseRENAME()
     return true;
 }
 
+bool syntacticParseRENAME_MATRIX()
+{
+    logger.log("syntacticParseRENAME_MATRIX");
+    if (tokenizedQuery.size() != 4 || tokenizedQuery[1] != "MATRIX")
+    {
+        cout << "SYNTAX ERROR" << endl;
+        return false;
+    }
+    parsedQuery.queryType = RENAME_MATRIX;
+    parsedQuery.renameFromMatrixName = tokenizedQuery[2];
+    parsedQuery.renameToMatrixName = tokenizedQuery[3];
+    return true;
+}
+
 bool semanticParseRENAME()
 {
     logger.log("semanticParseRENAME");
@@ -42,10 +56,35 @@ bool semanticParseRENAME()
     return true;
 }
 
+bool semanticParseRENAME_MATRIX()
+{
+    logger.log("semanticParseRENAME_MATRIX");
+
+    if (!tableCatalogue.isMatrix(parsedQuery.renameFromMatrixName))
+    {
+        cout << "SEMANTIC ERROR: Matrix doesn't exist" << endl;
+        return false;
+    }
+
+    if (tableCatalogue.exists(parsedQuery.renameToMatrixName))
+    {
+        cout << "SEMANTIC ERROR: Relation/Matrix already exists" << endl;
+        return false;
+    }
+    return true;
+}
+
 void executeRENAME()
 {
     logger.log("executeRENAME");
     Table* table = tableCatalogue.getTable(parsedQuery.renameRelationName);
     table->renameColumn(parsedQuery.renameFromColumnName, parsedQuery.renameToColumnName);
+    return;
+}
+
+void executeRENAME_MATRIX()
+{
+    logger.log("executeRENAME_MATRIX");
+    tableCatalogue.renameMatrix(parsedQuery.renameFromMatrixName, parsedQuery.renameToMatrixName);
     return;
 }
