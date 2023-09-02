@@ -59,3 +59,48 @@ TableCatalogue::~TableCatalogue(){
         delete table.second;
     }
 }
+
+void TableCatalogue::insertMatrix(Matrix* matrix)
+{
+    logger.log("TableCatalogue::~insertMatrix");
+    this->matrices[matrix->matrixName] = matrix;
+}
+
+void TableCatalogue::deleteMatrix(string matrixName)
+{
+    logger.log("TableCatalogue::deleteMatrix");
+    this->matrices[matrixName]->unload();
+    delete this->matrices[matrixName];
+    this->matrices.erase(matrixName);
+}
+Matrix* TableCatalogue::getMatrix(string matrixName)
+{
+    logger.log("TableCatalogue::getMatrix");
+    Matrix *matrix = this->matrices[matrixName];
+    return matrix;
+}
+bool TableCatalogue::isMatrix(string matrixName)
+{
+    logger.log("TableCatalogue::isMatrix");
+    if (this->matrices.count(matrixName))
+        return true;
+    return false;
+}
+
+bool TableCatalogue::exists(string name)
+{
+    logger.log("TableCatalogue::exists");
+    if (this->isTable(name) || this->isMatrix(name))
+        return true;
+    return false;
+}
+
+Types TableCatalogue::getType(string name)
+{
+    logger.log("TableCatalogue::getType");
+    if (this->isTable(name))
+        return TABLE;
+    else if (this->isMatrix(name))
+        return MATRIX;
+    return NONE;
+}

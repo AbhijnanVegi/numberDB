@@ -1,4 +1,5 @@
 #include "table.h"
+#include "matrix.h"
 
 /**
  * @brief The TableCatalogue acts like an index of tables existing in the
@@ -6,10 +7,17 @@
  * be added(removed) to(from) the tableCatalogue. 
  *
  */
+enum Types {
+    TABLE,
+    MATRIX,
+    NONE
+};
+
 class TableCatalogue
 {
 
     unordered_map<string, Table*> tables;
+    unordered_map<string, Matrix*> matrices;
 
 public:
     TableCatalogue() {}
@@ -19,5 +27,16 @@ public:
     bool isTable(string tableName);
     bool isColumnFromTable(string columnName, string tableName);
     void print();
+
+    // Matrix functions
+    void insertMatrix(Matrix* matrix);
+    void deleteMatrix(string matrixName);
+    Matrix* getMatrix(string matrixName);
+    bool isMatrix(string matrixName);
+    void printMatrix();
+
+    bool exists(string name);
+    Types getType(string name);
+
     ~TableCatalogue();
 };

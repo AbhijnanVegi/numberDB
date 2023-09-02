@@ -17,6 +17,8 @@ void executeCommand(){
         case SELECTION: executeSELECTION(); break;
         case SORT: executeSORT(); break;
         case SOURCE: executeSOURCE(); break;
+        case LOAD_MATRIX: executeLOAD_MATRIX(); break;
+        case PRINT_MATRIX: executePRINT_MATRIX(); break;
         default: cout<<"PARSING ERROR"<<endl;
     }
 

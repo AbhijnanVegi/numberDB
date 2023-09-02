@@ -66,6 +66,8 @@ bool Matrix::blockify()
     this->columnCount = count(line.begin(), line.end(), ',') + 1;
     vector<int> row(this->numsPerBlock, 0);
     vector<vector<int>> rowsInPage(1, vector<int>(this->numsPerBlock, 0));
+
+    fin.seekg(0, ios::beg);
     while (getline(fin, line))
     {
         stringstream s(line);
@@ -127,15 +129,16 @@ void Matrix::updateStatistics(vector<int> row)
 void Matrix::print()
 {
     logger.log("Matrix::print");
-    uint count = min((long long)PRINT_COUNT, this->rowCount);
+    uint count = min(PRINT_COUNT, this->columnCount);
     Cursor cursor(this->matrixName, 0);
     vector<int> row;
-    for (int rowCounter = 0; rowCounter < count; rowCounter++)
-    {
-        row = cursor.getNext();
-        this->writeRow(row, cout);
+    for (int numCounter = 0; numCounter < (this->columnCount * count); numCounter++) {
+        if (numCounter % this->numsPerBlock == 0)
+            row = cursor.getNext();
+        cout << row[numCounter % this->numsPerBlock] << " ";
+        if (numCounter % this->columnCount == this->columnCount - 1)
+            cout << endl;
     }
-    printRowCount(this->rowCount);
 }
 
 

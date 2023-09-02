@@ -68,7 +68,7 @@ void writeRow(vector<T> row, ostream &fout)
  * @brief Static function that takes a vector of valued and prints them out in a
  * comma seperated format.
  *
- * @tparam T current usaages include int and string
+ * @tparam T current usages include int and string
  * @param row 
  */
 template <typename T>

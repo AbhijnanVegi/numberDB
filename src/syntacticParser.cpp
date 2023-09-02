@@ -11,6 +11,19 @@ bool syntacticParse()
         return false;
     }
 
+    if (tokenizedQuery[1] == "MATRIX")
+    {
+        if (possibleQueryType == "LOAD")
+            return syntacticParseLOAD_MATRIX();
+        if (possibleQueryType == "PRINT")
+            return syntacticParsePRINT_MATRIX();
+        else
+        {
+            cout << "SYNTAX ERROR" << endl;
+            return false;
+        }
+    }
+
     if (possibleQueryType == "CLEAR")
         return syntacticParseCLEAR();
     else if (possibleQueryType == "INDEX")

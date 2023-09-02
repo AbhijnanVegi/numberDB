@@ -1,5 +1,4 @@
 #include "tableCatalogue.h"
-#include "matrixCatalogue.h"
 
 using namespace std;
 
@@ -13,6 +12,7 @@ enum QueryType
     JOIN,
     LIST,
     LOAD,
+    LOAD_MATRIX,
     PRINT,
     PROJECTION,
     RENAME,
@@ -123,6 +123,7 @@ bool syntacticParseRENAME();
 bool syntacticParseSELECTION();
 bool syntacticParseSORT();
 bool syntacticParseSOURCE();
+bool syntacticParseLOAD_MATRIX();
 bool syntacticParsePRINT_MATRIX();
 bool isFileExists(string tableName);
 bool isQueryFile(string fileName);

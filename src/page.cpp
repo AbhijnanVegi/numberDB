@@ -31,22 +31,41 @@ Page::Page(string tableName, int pageIndex)
     this->tableName = tableName;
     this->pageIndex = pageIndex;
     this->pageName = "../data/temp/" + this->tableName + "_Page" + to_string(pageIndex);
-    Table table = *tableCatalogue.getTable(tableName);
-    this->columnCount = table.columnCount;
-    uint maxRowCount = table.maxRowsPerBlock;
-    vector<int> row(columnCount, 0);
-    this->rows.assign(maxRowCount, row);
+
 
     ifstream fin(pageName, ios::in);
-    this->rowCount = table.rowsPerBlockCount[pageIndex];
-    int number;
-    for (uint rowCounter = 0; rowCounter < this->rowCount; rowCounter++)
-    {
-        for (int columnCounter = 0; columnCounter < columnCount; columnCounter++)
+    if (tableCatalogue.getType(tableName) == TABLE) {
+        Table table = *tableCatalogue.getTable(tableName);
+        this->columnCount = table.columnCount;
+        uint maxRowCount = table.maxRowsPerBlock;
+        vector<int> row(columnCount, 0);
+        this->rows.assign(maxRowCount, row);
+
+        this->rowCount = table.rowsPerBlockCount[pageIndex];
+        int number;
+        for (uint rowCounter = 0; rowCounter < this->rowCount; rowCounter++)
+        {
+            for (int columnCounter = 0; columnCounter < columnCount; columnCounter++)
+            {
+                fin >> number;
+                this->rows[rowCounter][columnCounter] = number;
+            }
+        }
+    } else if (tableCatalogue.getType(tableName) == MATRIX) {
+        Matrix matrix = *tableCatalogue.getMatrix(tableName);
+        this->columnCount = matrix.rowsPerBlockCount[pageIndex];
+        this->rowCount = 1;
+        vector<int> row(columnCount, 0);
+        this->rows.assign(1, row);
+
+        int number;
+        for (int numCounter = 0; numCounter < columnCount; numCounter++)
         {
             fin >> number;
-            this->rows[rowCounter][columnCounter] = number;
+            this->rows[0][numCounter] = number;
         }
+    } else {
+        logger.log("Page::Page: Invalid table type");
     }
     fin.close();
 }
