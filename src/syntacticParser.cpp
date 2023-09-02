@@ -17,6 +17,8 @@ bool syntacticParse()
             return syntacticParseLOAD_MATRIX();
         if (possibleQueryType == "PRINT")
             return syntacticParsePRINT_MATRIX();
+        if (possibleQueryType == "EXPORT")
+            return syntacticParseEXPORT_MATRIX();
         else
         {
             cout << "SYNTAX ERROR" << endl;

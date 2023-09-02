@@ -19,6 +19,7 @@ void executeCommand(){
         case SOURCE: executeSOURCE(); break;
         case LOAD_MATRIX: executeLOAD_MATRIX(); break;
         case PRINT_MATRIX: executePRINT_MATRIX(); break;
+        case EXPORT_MATRIX : executeEXPORT_MATRIX(); break;
         default: cout<<"PARSING ERROR"<<endl;
     }
 

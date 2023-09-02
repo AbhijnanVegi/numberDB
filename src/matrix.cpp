@@ -4,8 +4,7 @@
  * @brief Construct a new Matrix::Matrix object
  *
  */
-Matrix::Matrix()
-{
+Matrix::Matrix() {
     logger.log("Matrix::Matrix");
 }
 
@@ -16,8 +15,7 @@ Matrix::Matrix()
  *
  * @param matrixName 
  */
-Matrix::Matrix(string matrixName)
-{
+Matrix::Matrix(string matrixName) {
     logger.log("Matrix::Matrix");
     this->sourceFileName = "../data/" + matrixName + ".csv";
     this->matrixName = matrixName;
@@ -31,13 +29,11 @@ Matrix::Matrix(string matrixName)
  * @return true if the matrix has been successfully loaded 
  * @return false if an error occurred 
  */
-bool Matrix::load()
-{
+bool Matrix::load() {
     logger.log("Matrix::load");
     fstream fin(this->sourceFileName, ios::in);
     string line;
-    if (getline(fin, line))
-    {
+    if (getline(fin, line)) {
         fin.close();
         if (this->blockify())
             return true;
@@ -53,8 +49,7 @@ bool Matrix::load()
  * @return true if successfully blockified
  * @return false otherwise
  */
-bool Matrix::blockify()
-{
+bool Matrix::blockify() {
     logger.log("Matrix::blockify");
     ifstream fin(this->sourceFileName, ios::in);
     string line, word;
@@ -68,26 +63,22 @@ bool Matrix::blockify()
     vector<vector<int>> rowsInPage(1, vector<int>(this->numsPerBlock, 0));
 
     fin.seekg(0, ios::beg);
-    while (getline(fin, line))
-    {
+    while (getline(fin, line)) {
         stringstream s(line);
-        for (int columnCounter = 0; columnCounter < this->columnCount; columnCounter++)
-        {
+        for (int columnCounter = 0; columnCounter < this->columnCount; columnCounter++) {
             if (!getline(s, word, ','))
                 return false;
             row[numCounter] = stoi(word);
             numCounter++;
-
-            if (numCounter == this->numsPerBlock)
-            {
+            if (numCounter == this->numsPerBlock) {
                 bufferManager.writePage(this->matrixName, this->blockCount, row, numCounter);
                 this->blockCount++;
                 numCounter = 0;
             }
         }
+        this->updateStatistics(row);
     }
-    if (numCounter)
-    {
+    if (numCounter) {
         bufferManager.writePage(this->matrixName, this->blockCount, row, numCounter);
         this->blockCount++;
         this->rowsPerBlockCount.emplace_back(numCounter);
@@ -107,17 +98,14 @@ bool Matrix::blockify()
  *
  * @param row 
  */
-void Matrix::updateStatistics(vector<int> row)
-{
+void Matrix::updateStatistics(vector<int> row) {
     this->rowCount++;
-    for (int columnCounter = 0; columnCounter < this->columnCount; columnCounter++)
-    {
-        if (!this->distinctValuesInColumns[columnCounter].count(row[columnCounter]))
-        {
-            this->distinctValuesInColumns[columnCounter].insert(row[columnCounter]);
-            this->distinctValuesPerColumnCount[columnCounter]++;
-        }
-    }
+//    for (int columnCounter = 0; columnCounter < this->columnCount; columnCounter++) {
+//        if (!this->distinctValuesInColumns[columnCounter].count(row[columnCounter])) {
+//            this->distinctValuesInColumns[columnCounter].insert(row[columnCounter]);
+//            this->distinctValuesPerColumnCount[columnCounter]++;
+//        }
+//    }
 }
 
 /**
@@ -126,8 +114,7 @@ void Matrix::updateStatistics(vector<int> row)
  * the rows are printed.
  *
  */
-void Matrix::print()
-{
+void Matrix::print() {
     logger.log("Matrix::print");
     uint count = min(PRINT_COUNT, this->columnCount);
     Cursor cursor(this->matrixName, 0);
@@ -142,7 +129,6 @@ void Matrix::print()
 }
 
 
-
 /**
  * @brief This function returns one row of the matrix using the cursor object. It
  * returns an empty row is all rows have been read.
@@ -150,16 +136,13 @@ void Matrix::print()
  * @param cursor 
  * @return vector<int> 
  */
-void Matrix::getNextPage(Cursor *cursor)
-{
+void Matrix::getNextPage(Cursor *cursor) {
     logger.log("Matrix::getNext");
 
-        if (cursor->pageIndex < this->blockCount - 1)
-        {
-            cursor->nextPage(cursor->pageIndex+1);
-        }
+    if (cursor->pageIndex < this->blockCount - 1) {
+        cursor->nextPage(cursor->pageIndex + 1);
+    }
 }
-
 
 
 /**
@@ -167,19 +150,21 @@ void Matrix::getNextPage(Cursor *cursor)
  * folder.
  *
  */
-void Matrix::makePermanent()
-{
+void Matrix::makePermanent() {
     logger.log("Matrix::makePermanent");
-    if(!this->isPermanent())
+    if (!this->isPermanent())
         bufferManager.deleteFile(this->sourceFileName);
     string newSourceFile = "../data/" + this->matrixName + ".csv";
     ofstream fout(newSourceFile, ios::out);
     Cursor cursor(this->matrixName, 0);
     vector<int> row;
-    for (int rowCounter = 0; rowCounter < this->rowCount; rowCounter++)
-    {
-        row = cursor.getNext();
-        this->writeRow(row, fout);
+    cout << "RowCount" << this->rowCount << "\n";
+    row = cursor.getNext();
+    for (int rowCounter = 0; rowCounter < this->rowCount; rowCounter++) {
+        // take a subarray of size columnCount from row
+        vector<int> currRow(row.begin() + rowCounter * this->columnCount,
+                            row.begin() + (rowCounter + 1) * this->columnCount);
+        this->writeRow(currRow, fout);
     }
     fout.close();
 }
@@ -190,11 +175,10 @@ void Matrix::makePermanent()
  * @return true if exported
  * @return false otherwise
  */
-bool Matrix::isPermanent()
-{
+bool Matrix::isPermanent() {
     logger.log("Matrix::isPermanent");
     if (this->sourceFileName == "../data/" + this->matrixName + ".csv")
-    return true;
+        return true;
     return false;
 }
 
@@ -203,7 +187,7 @@ bool Matrix::isPermanent()
  * all temporary files created as part of this matrix
  *
  */
-void Matrix::unload(){
+void Matrix::unload() {
     logger.log("Matrix::~unload");
     for (int pageCounter = 0; pageCounter < this->blockCount; pageCounter++)
         bufferManager.deleteFile(this->matrixName, pageCounter);
@@ -216,8 +200,7 @@ void Matrix::unload(){
  * 
  * @return Cursor 
  */
-Cursor Matrix::getCursor()
-{
+Cursor Matrix::getCursor() {
     logger.log("Matrix::getCursor");
     Cursor cursor(this->matrixName, 0);
     return cursor;

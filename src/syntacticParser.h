@@ -125,5 +125,6 @@ bool syntacticParseSORT();
 bool syntacticParseSOURCE();
 bool syntacticParseLOAD_MATRIX();
 bool syntacticParsePRINT_MATRIX();
+bool syntacticParseEXPORT_MATRIX();
 bool isFileExists(string tableName);
 bool isQueryFile(string fileName);
