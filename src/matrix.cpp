@@ -191,14 +191,22 @@ void Matrix::makePermanent() {
     string newSourceFile = "../data/" + this->matrixName + ".csv";
     ofstream fout(newSourceFile, ios::out);
     Cursor cursor(this->matrixName, 0);
+    cout << "RowCount " << this->columnCount << "\n";
+
     vector<int> row;
-    cout << "RowCount" << this->rowCount << "\n";
-    row = cursor.getNext();
-    for (int rowCounter = 0; rowCounter < this->rowCount; rowCounter++) {
-        // take a subarray of size columnCount from row
-        vector<int> currRow(row.begin() + rowCounter * this->columnCount,
-                            row.begin() + (rowCounter + 1) * this->columnCount);
-        this->writeRow(currRow, fout);
+    vector<vector<int>> rows(maxRowsPerBlock, vector<int>(this->columnCount, 0));
+
+    for(int k = 0; k < blockCount/pagesPerRow; k++) {
+        for (int i = 0; i < pagesPerRow; i++) {
+            cursor.nextPage(i+k*pagesPerRow);
+            for (int j = 0; j < rowsPerBlockCount[i+k*pagesPerRow]; j++) {
+                row = cursor.getNext();
+                copy(row.begin(), row.end(), rows[j].begin() + i * maxRowsPerBlock);
+            }
+        }
+        for (int i = 0; i < rowsPerBlockCount[k*pagesPerRow]; i++) {
+                writeRow(rows[i], fout);
+        }
     }
     fout.close();
 }
