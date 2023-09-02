@@ -93,6 +93,22 @@ void BufferManager::writePage(string tableName, int pageIndex, vector<vector<int
 }
 
 /**
+ * @brief The buffer manager is also responsible for writing pages. This is
+ * called when new tables are created using assignment statements.
+ *
+ * @param tableName
+ * @param pageIndex
+ * @param row
+ * @param numCount
+ */
+void BufferManager::writePage(string tableName, int pageIndex, vector<int>row, int numCount)
+{
+    logger.log("BufferManager::writePage");
+    Page page(tableName, pageIndex, row, numCount);
+    page.writePage();
+}
+
+/**
  * @brief Deletes file names fileName
  *
  * @param fileName 

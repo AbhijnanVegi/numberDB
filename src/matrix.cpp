@@ -58,14 +58,14 @@ bool Matrix::blockify()
     logger.log("Matrix::blockify");
     ifstream fin(this->sourceFileName, ios::in);
     string line, word;
-    vector<int> row(this->columnCount, 0);
-    vector<vector<int>> rowsInPage(this->maxRowsPerBlock, row);
-    int pageCounter = 0;
+    int numCounter = 0;
     unordered_set<int> dummy;
     dummy.clear();
-    this->distinctValuesInColumns.assign(this->columnCount, dummy);
-    this->distinctValuesPerColumnCount.assign(this->columnCount, 0);
     getline(fin, line);
+    // count the number of columns
+    this->columnCount = count(line.begin(), line.end(), ',') + 1;
+    vector<int> row(this->numsPerBlock, 0);
+    vector<vector<int>> rowsInPage(1, vector<int>(this->numsPerBlock, 0));
     while (getline(fin, line))
     {
         stringstream s(line);
@@ -73,30 +73,27 @@ bool Matrix::blockify()
         {
             if (!getline(s, word, ','))
                 return false;
-            row[columnCounter] = stoi(word);
-            rowsInPage[pageCounter][columnCounter] = row[columnCounter];
-        }
-        pageCounter++;
-        this->updateStatistics(row);
-        if (pageCounter == this->maxRowsPerBlock)
-        {
-            bufferManager.writePage(this->matrixName, this->blockCount, rowsInPage, pageCounter);
-            this->blockCount++;
-            this->rowsPerBlockCount.emplace_back(pageCounter);
-            pageCounter = 0;
+            row[numCounter] = stoi(word);
+            numCounter++;
+
+            if (numCounter == this->numsPerBlock)
+            {
+                bufferManager.writePage(this->matrixName, this->blockCount, row, numCounter);
+                this->blockCount++;
+                numCounter = 0;
+            }
         }
     }
-    if (pageCounter)
+    if (numCounter)
     {
-        bufferManager.writePage(this->matrixName, this->blockCount, rowsInPage, pageCounter);
+        bufferManager.writePage(this->matrixName, this->blockCount, row, numCounter);
         this->blockCount++;
-        this->rowsPerBlockCount.emplace_back(pageCounter);
-        pageCounter = 0;
+        this->rowsPerBlockCount.emplace_back(numCounter);
+        numCounter = 0;
     }
 
-    if (this->rowCount == 0)
+    if (this->blockCount == 0)
         return false;
-    this->distinctValuesInColumns.clear();
     return true;
 }
 

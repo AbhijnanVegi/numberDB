@@ -10,7 +10,7 @@ enum IndexingStrategy
 };
 #endif
 
-
+extern const float BLOCK_SIZE;
 /**
  * @brief Matrix class holds all information related to a loaded matrix.
  *
@@ -23,10 +23,10 @@ public:
     string sourceFileName = ""; // name of the source file
     string matrixName = ""; // name of the table
     uint columnCount = 0;
-    vector<uint> distinctValuesPerColumnCount;
     long long int rowCount = 0;
+    vector<uint> distinctValuesPerColumnCount;
     uint blockCount = 0;
-    uint maxRowsPerBlock = 0;
+    uint numsPerBlock = (BLOCK_SIZE * 1000) / (sizeof(int));
     vector<uint> rowsPerBlockCount;
     bool indexed = false;
     string indexedColumn = "";
@@ -48,13 +48,13 @@ public:
  * @brief Static function that takes a vector of valued and prints them out in a
  * comma seperated format.
  *
- * @tparam T current usaages include int and string
+ * @tparam T current usages include int and string
  * @param row 
  */
 template <typename T>
 void writeRow(vector<T> row, ostream &fout)
 {
-    logger.log("Matrix::printRow");
+    logger.log("Matrix::writeRow");
     for (int columnCounter = 0; columnCounter < row.size(); columnCounter++)
     {
         if (columnCounter != 0)
@@ -74,7 +74,7 @@ void writeRow(vector<T> row, ostream &fout)
 template <typename T>
 void writeRow(vector<T> row)
 {
-    logger.log("Matrix::printRow");
+    logger.log("Matrix::writeRow");
     ofstream fout(this->sourceFileName, ios::app);
     this->writeRow(row, fout);
     fout.close();

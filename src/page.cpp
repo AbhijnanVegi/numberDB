@@ -78,6 +78,17 @@ Page::Page(string tableName, int pageIndex, vector<vector<int>> rows, int rowCou
     this->pageName = "../data/temp/"+this->tableName + "_Page" + to_string(pageIndex);
 }
 
+Page::Page(string tableName, int pageIndex, vector<int> row, int numCount)
+{
+    logger.log("Page::Page");
+    this->tableName = tableName;
+    this->pageIndex = pageIndex;
+    this->rowCount = 1;
+    this->columnCount = numCount;
+    this->pageName = "../data/temp/"+this->tableName + "_Page" + to_string(pageIndex);
+    this->rows.assign(1, row);
+}
+
 /**
  * @brief writes current page contents to file.
  * 

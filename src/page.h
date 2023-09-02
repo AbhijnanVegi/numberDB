@@ -12,6 +12,7 @@
 
 class Page{
 
+
     string tableName;
     string pageIndex;
     int columnCount;
@@ -24,6 +25,7 @@ class Page{
     Page();
     Page(string tableName, int pageIndex);
     Page(string tableName, int pageIndex, vector<vector<int>> rows, int rowCount);
+    Page(string tableName, int pageIndex, vector<int> row, int numCount);
     vector<int> getRow(int rowIndex);
     void writePage();
 };
