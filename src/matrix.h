@@ -26,7 +26,8 @@ public:
     long long int rowCount = 0;
     vector<uint> distinctValuesPerColumnCount;
     uint blockCount = 0;
-    uint numsPerBlock = (BLOCK_SIZE * 1000) / (sizeof(int));
+    uint maxRowsPerBlock = sqrt((BLOCK_SIZE * 1000) / (sizeof(int)));
+    uint pagesPerRow = 0;
     vector<uint> rowsPerBlockCount;
     bool indexed = false;
     string indexedColumn = "";
@@ -40,6 +41,7 @@ public:
     void makePermanent();
     bool isPermanent();
     void getNextPage(Cursor *cursor);
+    void getPage(Cursor *cursor, int pageIndex);
     Cursor getCursor();
     int getColumnIndex(string columnName);
     void unload();

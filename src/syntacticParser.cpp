@@ -128,6 +128,8 @@ void ParsedQuery::clear()
     this->sortColumnName = "";
     this->sortRelationName = "";
 
+    this->transposeResultRelationName = "";
+
     this->sourceFileName = "";
 }
 

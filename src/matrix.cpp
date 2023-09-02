@@ -53,36 +53,50 @@ bool Matrix::blockify() {
     logger.log("Matrix::blockify");
     ifstream fin(this->sourceFileName, ios::in);
     string line, word;
-    int numCounter = 0;
+    int rowCounter = 0;
     unordered_set<int> dummy;
     dummy.clear();
     getline(fin, line);
     // count the number of columns
     this->columnCount = count(line.begin(), line.end(), ',') + 1;
-    vector<int> row(this->numsPerBlock, 0);
-    vector<vector<int>> rowsInPage(1, vector<int>(this->numsPerBlock, 0));
+    this->pagesPerRow = 1 + ((this->columnCount - 1) / this->maxRowsPerBlock);
+    vector<vector<vector<int>>> pages(pagesPerRow, vector<vector<int>>());
+
+    for (int pageCounter = 0; pageCounter < pagesPerRow - 1; pageCounter++) {
+        pages[pageCounter].assign(this->maxRowsPerBlock, vector<int>(this->maxRowsPerBlock, 0));
+    }
+
+    pages[pagesPerRow - 1].assign(this->maxRowsPerBlock, vector<int>(this->columnCount % this->maxRowsPerBlock, 0));
 
     fin.seekg(0, ios::beg);
     while (getline(fin, line)) {
         stringstream s(line);
+        for (auto &page: pages) {
+            page.emplace_back(vector<int>());
+        }
         for (int columnCounter = 0; columnCounter < this->columnCount; columnCounter++) {
             if (!getline(s, word, ','))
                 return false;
-            row[numCounter] = stoi(word);
-            numCounter++;
-            if (numCounter == this->numsPerBlock) {
-                bufferManager.writePage(this->matrixName, this->blockCount, row, numCounter);
-                this->blockCount++;
-                numCounter = 0;
-            }
+            pages[columnCounter / this->maxRowsPerBlock][rowCounter][columnCounter % this->maxRowsPerBlock] = stoi(
+                    word);
         }
-        this->updateStatistics(row);
+        rowCounter++;
+        if (rowCounter == this->maxRowsPerBlock) {
+            for (auto &page: pages) {
+                bufferManager.writePage(this->matrixName, this->blockCount, page, rowCounter);
+                this->blockCount++;
+                this->rowsPerBlockCount.emplace_back(rowCounter);
+            }
+            rowCounter = 0;
+        }
     }
-    if (numCounter) {
-        bufferManager.writePage(this->matrixName, this->blockCount, row, numCounter);
-        this->blockCount++;
-        this->rowsPerBlockCount.emplace_back(numCounter);
-        numCounter = 0;
+    if (rowCounter) {
+        for (auto &page: pages) {
+            bufferManager.writePage(this->matrixName, this->blockCount, page, rowCounter);
+            this->blockCount++;
+            this->rowsPerBlockCount.emplace_back(rowCounter);
+        }
+        rowCounter = 0;
     }
 
     if (this->blockCount == 0)
@@ -119,12 +133,24 @@ void Matrix::print() {
     uint count = min(PRINT_COUNT, this->columnCount);
     Cursor cursor(this->matrixName, 0);
     vector<int> row;
-    for (int numCounter = 0; numCounter < (this->columnCount * count); numCounter++) {
-        if (numCounter % this->numsPerBlock == 0)
+
+    vector<vector<int>> rows(count);
+
+    for(int i = 0; i < pagesPerRow; i++)
+    {
+        cursor.nextPage(i);
+        for(int j = 0; j < count; j++)
+        {
             row = cursor.getNext();
-        cout << row[numCounter % this->numsPerBlock] << " ";
-        if (numCounter % this->columnCount == this->columnCount - 1)
-            cout << endl;
+            rows[j].insert(rows[j].end(), row.begin(), row.end());
+            if ((j % maxRowsPerBlock) == (maxRowsPerBlock - 1)) {
+                cursor.nextPage(i + pagesPerRow);
+            }
+        }
+    }
+
+    for (auto &row: rows) {
+        writeRow(row, cout);
     }
 }
 
@@ -141,6 +167,14 @@ void Matrix::getNextPage(Cursor *cursor) {
 
     if (cursor->pageIndex < this->blockCount - 1) {
         cursor->nextPage(cursor->pageIndex + 1);
+    }
+}
+
+void Matrix::getPage(Cursor *cursor, int pageIndex) {
+    logger.log("Matrix::getPage");
+
+    if (pageIndex < this->blockCount - 1) {
+        cursor->nextPage(pageIndex);
     }
 }
 

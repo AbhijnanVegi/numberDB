@@ -53,16 +53,19 @@ Page::Page(string tableName, int pageIndex)
         }
     } else if (tableCatalogue.getType(tableName) == MATRIX) {
         Matrix matrix = *tableCatalogue.getMatrix(tableName);
-        this->columnCount = matrix.rowsPerBlockCount[pageIndex];
-        this->rowCount = 1;
+        this->columnCount = (pageIndex % matrix.pagesPerRow) < matrix.pagesPerRow - 1 ? matrix.maxRowsPerBlock : matrix.columnCount % matrix.maxRowsPerBlock;
+        this->rowCount = matrix.rowsPerBlockCount[pageIndex];
         vector<int> row(columnCount, 0);
-        this->rows.assign(1, row);
+        this->rows.assign(matrix.maxRowsPerBlock, row);
 
         int number;
-        for (int numCounter = 0; numCounter < columnCount; numCounter++)
+        for (uint rowCounter = 0; rowCounter < this->rowCount; rowCounter++)
         {
-            fin >> number;
-            this->rows[0][numCounter] = number;
+            for (int columnCounter = 0; columnCounter < columnCount; columnCounter++)
+            {
+                fin >> number;
+                this->rows[rowCounter][columnCounter] = number;
+            }
         }
     } else {
         logger.log("Page::Page: Invalid table type");
