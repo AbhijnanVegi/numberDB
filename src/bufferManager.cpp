@@ -140,6 +140,7 @@ void BufferManager::transposeMatrixPage(string tableName, int pageIndex, const P
     for (auto &p: this->pages) {
         if (p.pageName == pageName) {
             p.tranposePage(page);
+            accessLogger.writes++;
             break;
         }
     }

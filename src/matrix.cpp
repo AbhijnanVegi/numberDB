@@ -231,6 +231,7 @@ void Matrix::rename(string newMatrixName) {
         bufferManager.renameFile(oldPageName, newPageName);
     }
     this->matrixName = newMatrixName;
+    this->sourceFileName = "../data/" + newMatrixName + ".csv";
 }
 
 /**
