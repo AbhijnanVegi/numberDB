@@ -71,9 +71,6 @@ bool Matrix::blockify() {
     fin.seekg(0, ios::beg);
     while (getline(fin, line)) {
         stringstream s(line);
-        for (auto &page: pages) {
-            page.emplace_back(vector<int>());
-        }
         for (int columnCounter = 0; columnCounter < this->columnCount; columnCounter++) {
             if (!getline(s, word, ','))
                 return false;
