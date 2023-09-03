@@ -277,3 +277,20 @@ bool Matrix::checkSymmetry() {
     }
     return true;
 }
+
+void Matrix::transpose() {
+    logger.log("Matrix::transpose");
+    for (int i = 0; i < pagesPerRow; i++) {
+        for (int j = 0; j <= i; j++) {
+            Page page1, page2;
+            page1 = bufferManager.getPage(this->matrixName, i * pagesPerRow + j);
+            if (i == j)
+                bufferManager.transposeMatrixPage(this->matrixName, i * pagesPerRow + j, page1);
+            else {
+                page2 = bufferManager.getPage(this->matrixName, j * pagesPerRow + i);
+                bufferManager.transposeMatrixPage(this->matrixName, i * pagesPerRow + j, page2);
+                bufferManager.transposeMatrixPage(this->matrixName, j * pagesPerRow + i, page1);
+            }
+        }
+    }
+}

@@ -72,7 +72,11 @@ Page BufferManager::insertIntoPool(string tableName, int pageIndex)
     logger.log("BufferManager::insertIntoPool");
     Page page(tableName, pageIndex);
     if (this->pages.size() >= BLOCK_COUNT)
+    {
+        if (this->pages.front().isDirty())
+            this->pages.front().writePage();
         pages.pop_front();
+    }
     pages.push_back(page);
     return page;
 }
@@ -91,23 +95,6 @@ void BufferManager::writePage(string tableName, int pageIndex, vector<vector<int
     logger.log("BufferManager::writePage");
     accessLogger.writes++;
     Page page(tableName, pageIndex, rows, rowCount);
-    page.writePage();
-}
-
-/**
- * @brief The buffer manager is also responsible for writing pages. This is
- * called when new tables are created using assignment statements.
- *
- * @param tableName
- * @param pageIndex
- * @param row
- * @param numCount
- */
-void BufferManager::writePage(string tableName, int pageIndex, vector<int>row, int numCount)
-{
-    logger.log("BufferManager::writePage");
-    accessLogger.writes++;
-    Page page(tableName, pageIndex, row, numCount);
     page.writePage();
 }
 
@@ -151,6 +138,21 @@ void BufferManager::renameFile(string oldName, string newName)
                 page.pageName = newName;
                 break;
             }
+        }
+    }
+}
+
+void BufferManager::transposeMatrixPage(string tableName, int pageIndex, const Page page)
+{
+    logger.log("BufferManager::transposeMatrixPage");
+    string pageName = "../data/temp/"+tableName + "_Page" + to_string(pageIndex);
+    if (!this->inPool(pageName)) {
+        this->insertIntoPool(tableName, pageIndex);
+    }
+    for (auto &p : this->pages) {
+        if (p.pageName == pageName) {
+            p.tranposePage(page);
+            break;
         }
     }
 }

@@ -21,3 +21,4 @@ bool semanticParsePRINT_MATRIX();
 bool semanticParseEXPORT_MATRIX();
 bool semanticParseRENAME_MATRIX();
 bool semanticParseCHECKSYMMETRY();
+bool semanticParseTRANSPOSE_MATRIX();

@@ -23,7 +23,8 @@ enum QueryType
     EXPORT_MATRIX,
     PRINT_MATRIX,
     RENAME_MATRIX,
-    CHECKSYMMETRY
+    CHECKSYMMETRY,
+    TRANSPOSE_MATRIX
 };
 
 enum BinaryOperator
@@ -111,7 +112,7 @@ public:
 
     string checkSymmetryMatrixName = "";
 
-    string transposeResultRelationName = "";
+    string transposeMatrixName = "";
 
     ParsedQuery();
     void clear();
@@ -137,5 +138,6 @@ bool syntacticParsePRINT_MATRIX();
 bool syntacticParseEXPORT_MATRIX();
 bool syntacticParseRENAME_MATRIX();
 bool syntacticParseCHECKSYMMETRY();
+bool syntacticParseTRANSPOSE_MATRIX();
 bool isFileExists(string tableName);
 bool isQueryFile(string fileName);

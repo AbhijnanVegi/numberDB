@@ -21,6 +21,8 @@ bool syntacticParse()
             return syntacticParseEXPORT_MATRIX();
         else if (possibleQueryType == "RENAME")
             return syntacticParseRENAME_MATRIX();
+        else if (possibleQueryType == "TRANSPOSE")
+            return syntacticParseTRANSPOSE_MATRIX();
         else
         {
             cout << "SYNTAX ERROR" << endl;
@@ -132,7 +134,7 @@ void ParsedQuery::clear()
     this->sortColumnName = "";
     this->sortRelationName = "";
 
-    this->transposeResultRelationName = "";
+    this->transposeMatrixName = "";
 
     this->sourceFileName = "";
 }

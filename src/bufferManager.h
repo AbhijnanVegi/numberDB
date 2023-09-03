@@ -34,7 +34,6 @@ class BufferManager{
     void deleteFile(string tableName, int pageIndex);
     void deleteFile(string fileName);
     void renameFile(string oldName, string newName);
-    void writePage(string pageName, vector<vector<int>> rows);
     void writePage(string tableName, int pageIndex, vector<vector<int>> rows, int rowCount);
-    void writePage(string tableName, int pageIndex, vector<int> row, int numCount);
+    void transposeMatrixPage(string tableName, int pageIndex, const Page page);
 };

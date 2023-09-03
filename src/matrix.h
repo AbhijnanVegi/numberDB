@@ -41,6 +41,7 @@ public:
     void makePermanent();
     void rename(string newMatrixName);
     bool checkSymmetry();
+    void transpose();
     bool isPermanent();
     void getNextPage(Cursor *cursor);
     void getPage(Cursor *cursor, int pageIndex);

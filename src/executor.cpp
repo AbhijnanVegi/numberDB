@@ -22,6 +22,7 @@ void executeCommand(){
         case EXPORT_MATRIX : executeEXPORT_MATRIX(); break;
         case RENAME_MATRIX: executeRENAME_MATRIX(); break;
         case CHECKSYMMETRY: executeCHECKSYMMETRY(); break;
+        case TRANSPOSE_MATRIX: executeTRANSPOSE_MATRIX(); break;
         default: cout<<"PARSING ERROR"<<endl;
     }
 

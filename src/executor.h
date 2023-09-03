@@ -21,6 +21,7 @@ void executePRINT_MATRIX();
 void executeEXPORT_MATRIX();
 void executeRENAME_MATRIX();
 void executeCHECKSYMMETRY();
+void executeTRANSPOSE_MATRIX();
 
 bool evaluateBinOp(int value1, int value2, BinaryOperator binaryOperator);
 void printRowCount(int rowCount);

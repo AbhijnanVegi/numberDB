@@ -11,6 +11,7 @@ Page::Page()
     this->rowCount = 0;
     this->columnCount = 0;
     this->rows.clear();
+    this->dirty = false;
 }
 
 /**
@@ -130,4 +131,29 @@ void Page::writePage()
         fout << endl;
     }
     fout.close();
+}
+
+bool Page::isDirty() const {
+    return dirty;
+}
+
+void Page::updatePage(const Page &page) {
+    logger.log("Page::updatePage");
+    this->rows = page.rows;
+    this->rowCount = page.rowCount;
+    this->columnCount = page.columnCount;
+    this->dirty = true;
+}
+
+void Page::tranposePage(const Page &page) {
+    logger.log("Page::tranposePage");
+    this->rows = page.rows;
+    for (int i = 0; i < page.rowCount; i++) {
+        for (int j = 0; j < page.columnCount; j++) {
+            this->rows[j][i] = page.rows[i][j];
+        }
+    }
+    this->rowCount = page.columnCount;
+    this->columnCount = page.rowCount;
+    this->dirty = true;
 }
