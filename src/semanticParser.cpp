@@ -21,6 +21,7 @@ bool semanticParse(){
         case PRINT_MATRIX: return semanticParsePRINT_MATRIX();
         case EXPORT_MATRIX: return semanticParseEXPORT_MATRIX();
         case RENAME_MATRIX: return semanticParseRENAME_MATRIX();
+        case CHECKSYMMETRY: return semanticParseCHECKSYMMETRY();
         default: cout<<"SEMANTIC ERROR"<<endl;
     }
 

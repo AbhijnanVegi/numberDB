@@ -40,6 +40,7 @@ public:
     void print();
     void makePermanent();
     void rename(string newMatrixName);
+    bool checkSymmetry();
     bool isPermanent();
     void getNextPage(Cursor *cursor);
     void getPage(Cursor *cursor, int pageIndex);

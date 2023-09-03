@@ -254,3 +254,26 @@ Cursor Matrix::getCursor() {
     Cursor cursor(this->matrixName, 0);
     return cursor;
 }
+
+bool Matrix::checkSymmetry() {
+    logger.log("Matrix::checkSymmetry");
+    for (int i = 0; i < pagesPerRow; i++) {
+        for (int j = 0; j <= i; j++) {
+            Page page1, page2;
+            page1 = bufferManager.getPage(this->matrixName, i * pagesPerRow + j);
+            if (i == j)
+                page2 = page1;
+            else
+                page2 = bufferManager.getPage(this->matrixName, j * pagesPerRow + i);
+
+            // Check if page1 is transpose of page2
+            for (int a = 0; a < rowsPerBlockCount[i * pagesPerRow + j]; a++) {
+                for (int b = 0; b < rowsPerBlockCount[j * pagesPerRow + i]; b++) {
+                    if (page1.getRow(a)[b] != page2.getRow(b)[a])
+                        return false;
+                }
+            }
+        }
+    }
+    return true;
+}
