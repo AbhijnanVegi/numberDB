@@ -17,6 +17,7 @@ Page BufferManager::getPage(string tableName, int pageIndex)
 {
     logger.log("BufferManager::getPage");
     string pageName = "../data/temp/"+tableName + "_Page" + to_string(pageIndex);
+    accessLogger.reads++;
     if (this->inPool(pageName))
         return this->getFromPool(pageName);
     else
@@ -88,6 +89,7 @@ Page BufferManager::insertIntoPool(string tableName, int pageIndex)
 void BufferManager::writePage(string tableName, int pageIndex, vector<vector<int>> rows, int rowCount)
 {
     logger.log("BufferManager::writePage");
+    accessLogger.writes++;
     Page page(tableName, pageIndex, rows, rowCount);
     page.writePage();
 }
@@ -104,6 +106,7 @@ void BufferManager::writePage(string tableName, int pageIndex, vector<vector<int
 void BufferManager::writePage(string tableName, int pageIndex, vector<int>row, int numCount)
 {
     logger.log("BufferManager::writePage");
+    accessLogger.writes++;
     Page page(tableName, pageIndex, row, numCount);
     page.writePage();
 }
@@ -141,4 +144,13 @@ void BufferManager::renameFile(string oldName, string newName)
     if (rename(oldName.c_str(), newName.c_str()))
         logger.log("BufferManager::renameFile: Err");
         else logger.log("BufferManager::renameFile: Success");
+
+    if (this->inPool(oldName)) {
+        for (auto page : this->pages) {
+            if (oldName == page.pageName) {
+                page.pageName = newName;
+                break;
+            }
+        }
+    }
 }

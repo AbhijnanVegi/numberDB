@@ -217,7 +217,6 @@ void Matrix::rename(string newMatrixName) {
         string oldPageName = "../data/temp/" + this->matrixName + "_Page" + to_string(i);
         string newPageName = "../data/temp/" + newMatrixName + "_Page" + to_string(i);
         bufferManager.renameFile(oldPageName, newPageName);
-        bufferManager.deleteFile(oldPageName);
     }
     this->matrixName = newMatrixName;
 }

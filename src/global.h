@@ -1,4 +1,5 @@
 #include"executor.h"
+#include "accessLogger.h"
 
 extern const float BLOCK_SIZE;
 extern uint BLOCK_COUNT;
@@ -7,3 +8,4 @@ extern vector<string> tokenizedQuery;
 extern ParsedQuery parsedQuery;
 extern TableCatalogue tableCatalogue;
 extern BufferManager bufferManager;
+extern AccessLogger accessLogger;

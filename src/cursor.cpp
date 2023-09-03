@@ -39,7 +39,8 @@ vector<int> Cursor::getNext()
 void Cursor::nextPage(int pageIndex)
 {
     logger.log("Cursor::nextPage");
-    this->page = bufferManager.getPage(this->tableName, pageIndex);
+    if (this->pageIndex != pageIndex)
+        this->page = bufferManager.getPage(this->tableName, pageIndex);
     this->pageIndex = pageIndex;
     this->pagePointer = 0;
 }

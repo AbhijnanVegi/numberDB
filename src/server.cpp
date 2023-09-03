@@ -11,12 +11,17 @@ vector<string> tokenizedQuery;
 ParsedQuery parsedQuery;
 TableCatalogue tableCatalogue;
 BufferManager bufferManager;
+AccessLogger accessLogger;
 
 void doCommand()
 {
     logger.log("doCommand");
     if (syntacticParse() && semanticParse())
         executeCommand();
+    // Print stats
+    cout << "Blocks Read: " << accessLogger.reads << endl;
+    cout << "Blocks Written: " << accessLogger.writes << endl;
+    cout << "Blocks Accessed: " << accessLogger.reads + accessLogger.writes << endl;
     return;
 }
 
@@ -33,6 +38,7 @@ int main(void)
         cout << "\n> ";
         tokenizedQuery.clear();
         parsedQuery.clear();
+        accessLogger.clear();
         logger.log("\nReading New Command: ");
         getline(cin, command);
         logger.log(command);
