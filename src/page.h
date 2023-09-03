@@ -1,4 +1,5 @@
 #include"logger.h"
+
 /**
  * @brief The Page object is the main memory representation of a physical page
  * (equivalent to a block). The page class and the page.h header file are at the
@@ -10,7 +11,7 @@
  *</p>
  */
 
-class Page{
+class Page {
 
 
     string tableName;
@@ -20,16 +21,28 @@ class Page{
     vector<vector<int>> rows;
     bool dirty = false;
 
-    public:
+public:
 
     string pageName = "";
+
     Page();
+
+    pair<int, int> getDimensions() {
+        return make_pair(this->rowCount, this->columnCount);
+    }
+
     Page(string tableName, int pageIndex);
+
     Page(string tableName, int pageIndex, vector<vector<int>> rows, int rowCount);
+
     Page(string tableName, int pageIndex, vector<int> row, int numCount);
+
     bool isDirty() const;
+
     void updatePage(const Page &page);
+
     vector<int> getRow(int rowIndex);
+
     void writePage();
 
     void tranposePage(const Page &page);

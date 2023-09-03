@@ -2,8 +2,7 @@
 
 using namespace std;
 
-enum QueryType
-{
+enum QueryType {
     CLEAR,
     CROSS,
     DISTINCT,
@@ -24,11 +23,11 @@ enum QueryType
     PRINT_MATRIX,
     RENAME_MATRIX,
     CHECKSYMMETRY,
-    TRANSPOSE_MATRIX
+    TRANSPOSE_MATRIX,
+    COMPUTE_MATRIX
 };
 
-enum BinaryOperator
-{
+enum BinaryOperator {
     LESS_THAN,
     GREATER_THAN,
     LEQ,
@@ -38,22 +37,19 @@ enum BinaryOperator
     NO_BINOP_CLAUSE
 };
 
-enum SortingStrategy
-{
+enum SortingStrategy {
     ASC,
     DESC,
     NO_SORT_CLAUSE
 };
 
-enum SelectType
-{
+enum SelectType {
     COLUMN,
     INT_LITERAL,
     NO_SELECT_CLAUSE
 };
 
-class ParsedQuery
-{
+class ParsedQuery {
 
 public:
     QueryType queryType = UNDETERMINED;
@@ -114,30 +110,57 @@ public:
 
     string transposeMatrixName = "";
 
+    string computeMatrixName = "";
+
     ParsedQuery();
+
     void clear();
 };
 
 bool syntacticParse();
+
 bool syntacticParseCLEAR();
+
 bool syntacticParseCROSS();
+
 bool syntacticParseDISTINCT();
+
 bool syntacticParseEXPORT();
+
 bool syntacticParseINDEX();
+
 bool syntacticParseJOIN();
+
 bool syntacticParseLIST();
+
 bool syntacticParseLOAD();
+
 bool syntacticParsePRINT();
+
 bool syntacticParsePROJECTION();
+
 bool syntacticParseRENAME();
+
 bool syntacticParseSELECTION();
+
 bool syntacticParseSORT();
+
 bool syntacticParseSOURCE();
+
 bool syntacticParseLOAD_MATRIX();
+
 bool syntacticParsePRINT_MATRIX();
+
 bool syntacticParseEXPORT_MATRIX();
+
 bool syntacticParseRENAME_MATRIX();
+
 bool syntacticParseCHECKSYMMETRY();
+
+bool syntacticParseCOMPUTE();
+
 bool syntacticParseTRANSPOSE_MATRIX();
+
 bool isFileExists(string tableName);
+
 bool isQueryFile(string fileName);

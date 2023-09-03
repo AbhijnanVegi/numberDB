@@ -21,6 +21,23 @@ Matrix::Matrix(string matrixName) {
     this->matrixName = matrixName;
 }
 
+/*
+ * @brief Construct a new Matrix:: copy constructor
+ * */
+Matrix::Matrix(Matrix *matrix) {
+    logger.log("Matrix::Matrix");
+    this->sourceFileName = matrix->sourceFileName;
+    this->matrixName = matrix->matrixName;
+    this->columnCount = matrix->columnCount;
+    this->rowCount = matrix->rowCount;
+    this->blockCount = matrix->blockCount;
+    this->maxRowsPerBlock = matrix->maxRowsPerBlock;
+    this->pagesPerRow = matrix->pagesPerRow;
+    this->rowsPerBlockCount = matrix->rowsPerBlockCount;
+    this->distinctValuesInColumns = matrix->distinctValuesInColumns;
+    this->distinctValuesPerColumnCount = matrix->distinctValuesPerColumnCount;
+}
+
 /**
  * @brief The load function is used when the LOAD command is encountered. It
  * reads data from the source file, splits it into blocks and updates matrix
@@ -133,11 +150,9 @@ void Matrix::print() {
 
     vector<vector<int>> rows(count);
 
-    for(int i = 0; i < pagesPerRow; i++)
-    {
+    for (int i = 0; i < pagesPerRow; i++) {
         cursor.nextPage(i);
-        for(int j = 0; j < count; j++)
-        {
+        for (int j = 0; j < count; j++) {
             row = cursor.getNext();
             rows[j].insert(rows[j].end(), row.begin(), row.end());
             if ((j % maxRowsPerBlock) == (maxRowsPerBlock - 1)) {
@@ -193,16 +208,16 @@ void Matrix::makePermanent() {
     vector<int> row;
     vector<vector<int>> rows(maxRowsPerBlock, vector<int>(this->columnCount, 0));
 
-    for(int k = 0; k < blockCount/pagesPerRow; k++) {
+    for (int k = 0; k < blockCount / pagesPerRow; k++) {
         for (int i = 0; i < pagesPerRow; i++) {
-            cursor.nextPage(i+k*pagesPerRow);
-            for (int j = 0; j < rowsPerBlockCount[i+k*pagesPerRow]; j++) {
+            cursor.nextPage(i + k * pagesPerRow);
+            for (int j = 0; j < rowsPerBlockCount[i + k * pagesPerRow]; j++) {
                 row = cursor.getNext();
                 copy(row.begin(), row.end(), rows[j].begin() + i * maxRowsPerBlock);
             }
         }
-        for (int i = 0; i < rowsPerBlockCount[k*pagesPerRow]; i++) {
-                writeRow(rows[i], fout);
+        for (int i = 0; i < rowsPerBlockCount[k * pagesPerRow]; i++) {
+            writeRow(rows[i], fout);
         }
     }
     fout.close();
@@ -210,7 +225,7 @@ void Matrix::makePermanent() {
 
 void Matrix::rename(string newMatrixName) {
     logger.log("Matrix::rename");
-    for(int i = 0; i < blockCount; i++) {
+    for (int i = 0; i < blockCount; i++) {
         string oldPageName = "../data/temp/" + this->matrixName + "_Page" + to_string(i);
         string newPageName = "../data/temp/" + newMatrixName + "_Page" + to_string(i);
         bufferManager.renameFile(oldPageName, newPageName);
@@ -293,4 +308,55 @@ void Matrix::transpose() {
             }
         }
     }
+}
+
+void Matrix::compute() {
+    // add new matrix with name "this->matrixName + "_result"" to tableCatalogue
+    logger.log("Matrix::compute");
+    string newMatrixName = this->matrixName + "_RESULT";
+    Matrix *resultMatrix = new Matrix(newMatrixName);
+    // add to tableCatalogue
+    resultMatrix->columnCount = this->columnCount;
+    resultMatrix->rowCount = this->rowCount;
+    resultMatrix->blockCount = this->blockCount;
+    resultMatrix->maxRowsPerBlock = this->maxRowsPerBlock;
+    resultMatrix->pagesPerRow = this->pagesPerRow;
+    resultMatrix->rowsPerBlockCount = this->rowsPerBlockCount;
+    tableCatalogue.insertMatrix(resultMatrix);
+    for (int i = 0; i < pagesPerRow; i++) {
+        for (int j = 0; j <= i; j++) {
+            Page page1, page2;
+            page1 = bufferManager.getPage(this->matrixName, i * pagesPerRow + j);
+            if (i == j) {
+                auto [rowCount, columnCount] = page1.getDimensions();
+                vector<vector<int>> rows(rowCount, vector<int>(columnCount, 0));
+                for (int a = 0; a < rowCount; a++) {
+                    for (int b = 0; b < columnCount; b++) {
+                        rows[a][b] = page1.getRow(a)[b] - page1.getRow(b)[a];
+                    }
+                }
+                bufferManager.writePage(newMatrixName, i * pagesPerRow + j, rows, rowCount);
+            } else {
+                page2 = bufferManager.getPage(this->matrixName, j * pagesPerRow + i);
+                auto [rowCount1, columnCount1] = page1.getDimensions();
+                auto [rowCount2, columnCount2] = page2.getDimensions();
+                vector<vector<int>> rows1(rowCount1, vector<int>(columnCount1, 0));
+                vector<vector<int>> rows2(rowCount2, vector<int>(columnCount2, 0));
+                for (int a = 0; a < rowCount1; a++) {
+                    for (int b = 0; b < columnCount1; b++) {
+                        rows1[a][b] = page1.getRow(a)[b] - page2.getRow(b)[a];
+                    }
+                }
+                for (int a = 0; a < rowCount2; a++) {
+                    for (int b = 0; b < columnCount2; b++) {
+                        rows2[a][b] = page2.getRow(a)[b] - page1.getRow(b)[a];
+                    }
+                }
+                bufferManager.writePage(newMatrixName, i * pagesPerRow + j, rows1, rowCount1);
+                bufferManager.writePage(newMatrixName, j * pagesPerRow + i, rows2, rowCount2);
+            }
+        }
+    }
+
+
 }
