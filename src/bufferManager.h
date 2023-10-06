@@ -1,5 +1,5 @@
 #include"page.h"
-
+#include"comparator.h"
 /**
  * @brief The BufferManager is responsible for reading pages to the main memory.
  * Recall that large files are broken and stored as blocks in the hard disk. The
@@ -26,14 +26,17 @@ class BufferManager{
     bool inPool(string pageName);
     Page getFromPool(string pageName);
     Page insertIntoPool(string tableName, int pageIndex);
+    Page insertIntoPool(string tableName, int pageIndex, int columnCount);
 
     public:
     
     BufferManager();
     Page getPage(string tableName, int pageIndex);
+    Page getPage(string tableName, int pageIndex, int columnCount);
     void deleteFile(string tableName, int pageIndex);
     void deleteFile(string fileName);
     void renameFile(string oldName, string newName);
     void writePage(string tableName, int pageIndex, vector<vector<int>> rows, int rowCount);
+    void sortPage(string tableName, int pageIndex, RowCmp cmp);
     void transposeMatrixPage(string tableName, int pageIndex, const Page page);
 };

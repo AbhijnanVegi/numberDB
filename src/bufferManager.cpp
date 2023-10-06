@@ -22,6 +22,17 @@ Page BufferManager::getPage(string tableName, int pageIndex) {
         return this->insertIntoPool(tableName, pageIndex);
 }
 
+
+Page BufferManager::getPage(string tableName, int pageIndex, int columnCount) {
+    logger.log("BufferManager::getPage");
+    string pageName = "../data/temp/" + tableName + "_Page" + to_string(pageIndex);
+    accessLogger.reads++;
+    if (this->inPool(pageName))
+        return this->getFromPool(pageName);
+    else
+        return this->insertIntoPool(tableName, pageIndex, columnCount);
+}
+
 /**
  * @brief Checks to see if a page exists in the pool
  *
@@ -74,6 +85,18 @@ Page BufferManager::insertIntoPool(string tableName, int pageIndex) {
     return page;
 }
 
+Page BufferManager::insertIntoPool(string tableName, int pageIndex, int columnCount) {
+    logger.log("BufferManager::insertIntoPool");
+    Page page(tableName, pageIndex, columnCount);
+    if (this->pages.size() >= BLOCK_COUNT) {
+        if (this->pages.front().isDirty())
+            this->pages.front().writePage();
+        pages.pop_front();
+    }
+    pages.push_back(page);
+    return page;
+}
+
 /**
  * @brief The buffer manager is also responsible for writing pages. This is
  * called when new tables are created using assignment statements.
@@ -85,9 +108,18 @@ Page BufferManager::insertIntoPool(string tableName, int pageIndex) {
  */
 void BufferManager::writePage(string tableName, int pageIndex, vector<vector<int>> rows, int rowCount) {
     logger.log("BufferManager::writePage");
+    string pageName = "../data/temp/" + tableName + "_Page" + to_string(pageIndex);
+    if (inPool(pageName)) {
+        for (auto &page: pages) {
+            if (page.pageName == pageName) {
+                page.updatePage(rows);
+            }
+        }
+    } else {
+        Page page(tableName, pageIndex, rows, rowCount);
+        page.writePage();
+    }
     accessLogger.writes++;
-    Page page(tableName, pageIndex, rows, rowCount);
-    page.writePage();
 }
 
 /**
@@ -146,3 +178,17 @@ void BufferManager::transposeMatrixPage(string tableName, int pageIndex, const P
     }
 }
 
+void BufferManager::sortPage(string tableName, int pageIndex, RowCmp cmp) {
+    logger.log("BufferManager::transposeMatrixPage");
+    string pageName = "../data/temp/" + tableName + "_Page" + to_string(pageIndex);
+    if (!this->inPool(pageName)) {
+        this->insertIntoPool(tableName, pageIndex);
+    }
+    for (auto &p: this->pages) {
+        if (p.pageName == pageName) {
+            p.sortPage(cmp);
+            accessLogger.writes++;
+            break;
+        }
+    }
+}

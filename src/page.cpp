@@ -74,6 +74,27 @@ Page::Page(string tableName, int pageIndex)
     fin.close();
 }
 
+Page::Page(string tableName, int pageIndex, int columnCount) {
+    this->columnCount = columnCount;
+    this->rowCount = 0;
+    this->tableName = tableName;
+    this->pageIndex = pageIndex;
+    this->pageName = "../data/temp/" + this->tableName + "_Page" + to_string(pageIndex);
+    vector<int> row(columnCount, 0);
+    this->rows.assign(0, row);
+
+    int number , columnCounter = 0;
+    ifstream fin(pageName, ios::in);
+    while (fin >> number) {
+        row[columnCounter] = number;
+        if (++columnCounter == columnCount) {
+            this->rows.push_back(row);
+            this->rowCount++;
+            columnCounter = 0;
+        }
+    }
+}
+
 /**
  * @brief Get row from page indexed by rowIndex
  * 
@@ -145,6 +166,14 @@ void Page::updatePage(const Page &page) {
     this->dirty = true;
 }
 
+void Page::updatePage(const vector<vector<int>> &rows) {
+    logger.log("Page::updatePage");
+    this->rows = rows;
+    this->rowCount = rows.size();
+    this->columnCount = rows[0].size();
+    this->dirty = true;
+}
+
 void Page::tranposePage(const Page &page) {
     logger.log("Page::tranposePage");
     this->rows = page.rows;
@@ -156,4 +185,14 @@ void Page::tranposePage(const Page &page) {
     this->rowCount = page.columnCount;
     this->columnCount = page.rowCount;
     this->dirty = true;
+}
+
+void Page::sortPage(RowCmp cmp) {
+    logger.log("Page::sortPage");
+    sort(this->rows.begin(), this->rows.begin() + this->rowCount, cmp);
+    this->dirty = true;
+}
+
+int Page::getPageIndex() const {
+    return pageIndex;
 }

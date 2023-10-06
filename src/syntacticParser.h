@@ -1,4 +1,5 @@
 #include "tableCatalogue.h"
+#include "comparator.h"
 
 using namespace std;
 
@@ -35,12 +36,6 @@ enum BinaryOperator {
     EQUAL,
     NOT_EQUAL,
     NO_BINOP_CLAUSE
-};
-
-enum SortingStrategy {
-    ASC,
-    DESC,
-    NO_SORT_CLAUSE
 };
 
 enum SelectType {
@@ -96,9 +91,8 @@ public:
     string selectionSecondColumnName = "";
     int selectionIntLiteral = 0;
 
-    SortingStrategy sortingStrategy = NO_SORT_CLAUSE;
-    string sortResultRelationName = "";
-    string sortColumnName = "";
+    vector<SortingStrategy> sortingStrategy;
+    vector<string> sortColumnNames;
     string sortRelationName = "";
 
     string sourceFileName = "";
