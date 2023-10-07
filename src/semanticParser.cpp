@@ -29,6 +29,8 @@ bool semanticParse() {
             return semanticParseSELECTION();
         case SORT:
             return semanticParseSORT();
+        case ORDERBY:
+            return semanticParseORDERBY();
         case SOURCE:
             return semanticParseSOURCE();
         case LOAD_MATRIX:

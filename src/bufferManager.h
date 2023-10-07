@@ -27,6 +27,7 @@ class BufferManager{
     Page getFromPool(string pageName);
     Page insertIntoPool(string tableName, int pageIndex);
     Page insertIntoPool(string tableName, int pageIndex, int columnCount);
+    Page insertIntoPool(Page& page);
 
     public:
     
@@ -37,6 +38,7 @@ class BufferManager{
     void deleteFile(string fileName);
     void renameFile(string oldName, string newName);
     void writePage(string tableName, int pageIndex, vector<vector<int>> rows, int rowCount);
+    void copyPage(string tableName, int pageIndex, string newTableName, int newPageIndex, bool write = false);
     void sortPage(string tableName, int pageIndex, RowCmp cmp);
     void transposeMatrixPage(string tableName, int pageIndex, const Page page);
 };

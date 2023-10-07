@@ -1,5 +1,6 @@
 #include "comparator.h"
 #include"global.h"
+
 /**
  * @brief File contains method to process SORT commands.
  * 
@@ -56,14 +57,12 @@ bool semanticParseSORT() {
     return true;
 }
 
-void sortBlocks(Table* table, RowCmp cmp, Table* newTable = NULL) {
-    if (newTable == NULL) {
-        for (int i = 0; i < table->blockCount; i++)
-                bufferManager.sortPage(table->tableName, i, cmp);
-    }
+void sortBlocks(Table *table, RowCmp cmp) {
+    for (int i = 0; i < table->blockCount; i++)
+        bufferManager.sortPage(table->tableName, i, cmp);
 }
 
-void mergeBlocks(Table* table, RowCmp cmp) {
+void mergeBlocks(Table *table, RowCmp cmp) {
     int bc = table->blockCount; //block count
     const int memoryBuffer = 10; // in memory buffers to use
     int nruns = 1; // runs
@@ -74,7 +73,7 @@ void mergeBlocks(Table* table, RowCmp cmp) {
         int filesToWrite = (bc + blocksToMerge - 1) / blocksToMerge;
         int newFileSize = blocksToMerge * prevFileSize;
 
-        string prevTable = nruns == 1? table->tableName: table->tableName + "_Run" + to_string(nruns - 1);
+        string prevTable = nruns == 1 ? table->tableName : table->tableName + "_Run" + to_string(nruns - 1);
         string newTable = table->tableName + "_Run" + to_string(nruns);
 
         int filesWritten = 0;

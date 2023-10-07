@@ -97,6 +97,17 @@ Page BufferManager::insertIntoPool(string tableName, int pageIndex, int columnCo
     return page;
 }
 
+Page BufferManager::insertIntoPool(Page& page) {
+    logger.log("BufferManager::insertIntoPool");
+    if (this->pages.size() >= BLOCK_COUNT) {
+        if (this->pages.front().isDirty())
+            this->pages.front().writePage();
+        pages.pop_front();
+    }
+    pages.push_back(page);
+    return page;
+}
+
 /**
  * @brief The buffer manager is also responsible for writing pages. This is
  * called when new tables are created using assignment statements.
@@ -176,6 +187,16 @@ void BufferManager::transposeMatrixPage(string tableName, int pageIndex, const P
             break;
         }
     }
+}
+
+void BufferManager::copyPage(std::string tableName, int pageIndex, std::string newTableName, int newPageIndex, bool write) {
+    logger.log("BufferManager::copyPage");
+    string pageName = "../data/temp/" + tableName + "_Page" + to_string(pageIndex);
+    Page p = this->getPage(tableName, pageIndex);
+    p.pageName = "../data/temp/" + newTableName + "_Page" + to_string(newPageIndex);
+    if (write)
+        p.writePage();
+    insertIntoPool(p);
 }
 
 void BufferManager::sortPage(string tableName, int pageIndex, RowCmp cmp) {

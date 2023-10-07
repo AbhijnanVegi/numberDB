@@ -18,6 +18,7 @@ enum QueryType {
     RENAME,
     SELECTION,
     SORT,
+    ORDERBY,
     SOURCE,
     UNDETERMINED,
     EXPORT_MATRIX,
@@ -95,6 +96,11 @@ public:
     vector<string> sortColumnNames;
     string sortRelationName = "";
 
+    string orderByResultRelationName = "";
+    string orderByRelationName = "";
+    string orderByColumnName = "";
+    SortingStrategy orderBySortingStrategy;
+
     string sourceFileName = "";
 
     string renameFromMatrixName = "";
@@ -138,6 +144,8 @@ bool syntacticParseRENAME();
 bool syntacticParseSELECTION();
 
 bool syntacticParseSORT();
+
+bool syntacticParseORDERBY();
 
 bool syntacticParseSOURCE();
 

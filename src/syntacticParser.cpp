@@ -65,6 +65,8 @@ bool syntacticParse() {
             return syntacticParseCROSS();
         else if (possibleQueryType == "DISTINCT")
             return syntacticParseDISTINCT();
+        else if (possibleQueryType == "ORDER")
+            return syntacticParseORDERBY();
         else {
             cout << "SYNTAX ERROR" << endl;
             return false;

@@ -28,6 +28,8 @@ void executeSELECTION();
 
 void executeSORT();
 
+void executeORDERBY();
+
 void executeSOURCE();
 
 void executeLOAD_MATRIX();
@@ -47,3 +49,7 @@ void executeCOMPUTE();
 bool evaluateBinOp(int value1, int value2, BinaryOperator binaryOperator);
 
 void printRowCount(int rowCount);
+
+void sortBlocks(Table* table, RowCmp cmp);
+
+void mergeBlocks(Table *table, RowCmp cmp);

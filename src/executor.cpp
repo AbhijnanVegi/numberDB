@@ -42,6 +42,9 @@ void executeCommand() {
         case SORT:
             executeSORT();
             break;
+        case ORDERBY:
+            executeORDERBY();
+            break;
         case SOURCE:
             executeSOURCE();
             break;

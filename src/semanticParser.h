@@ -28,6 +28,8 @@ bool semanticParseSELECTION();
 
 bool semanticParseSORT();
 
+bool semanticParseORDERBY();
+
 bool semanticParseSOURCE();
 
 bool semanticParseLOAD_MATRIX();
