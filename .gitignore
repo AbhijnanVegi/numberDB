@@ -34,3 +34,6 @@ src/server
 
 # Logs
 src/log
+
+data/BIG_RESULT.csv
+data/EMPLOYEE.csv

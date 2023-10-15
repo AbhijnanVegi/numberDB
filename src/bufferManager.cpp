@@ -97,7 +97,7 @@ Page BufferManager::insertIntoPool(string tableName, int pageIndex, int columnCo
     return page;
 }
 
-Page BufferManager::insertIntoPool(Page& page) {
+Page BufferManager::insertIntoPool(Page &page) {
     logger.log("BufferManager::insertIntoPool");
     if (this->pages.size() >= BLOCK_COUNT) {
         if (this->pages.front().isDirty())
@@ -189,7 +189,8 @@ void BufferManager::transposeMatrixPage(string tableName, int pageIndex, const P
     }
 }
 
-void BufferManager::copyPage(std::string tableName, int pageIndex, std::string newTableName, int newPageIndex, bool write) {
+void
+BufferManager::copyPage(std::string tableName, int pageIndex, std::string newTableName, int newPageIndex, bool write) {
     logger.log("BufferManager::copyPage");
     string pageName = "../data/temp/" + tableName + "_Page" + to_string(pageIndex);
     Page p = this->getPage(tableName, pageIndex);
@@ -200,7 +201,7 @@ void BufferManager::copyPage(std::string tableName, int pageIndex, std::string n
 }
 
 void BufferManager::sortPage(string tableName, int pageIndex, RowCmp cmp) {
-    logger.log("BufferManager::transposeMatrixPage");
+    logger.log("BufferManager::sortPage");
     string pageName = "../data/temp/" + tableName + "_Page" + to_string(pageIndex);
     if (!this->inPool(pageName)) {
         this->insertIntoPool(tableName, pageIndex);
