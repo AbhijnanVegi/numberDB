@@ -77,6 +77,8 @@ void executeJOIN() {
     vector<string> resultTableColumns = firstTableColumns;
     resultTableColumns.insert(resultTableColumns.end(), secondTableColumns.begin(), secondTableColumns.end());
     Table *resultTable = new Table(parsedQuery.joinResultRelationName, resultTableColumns);
+    resultTable->blockCount = 0;
+
 
     firstTableSorted->columnCount = firstTable->columnCount;
     firstTableSorted->columns = firstTable->columns;
@@ -119,19 +121,37 @@ void executeJOIN() {
     Cursor secondCursor = secondTableSorted->getCursor();
     vector<int> firstRow = firstCursor.getNext();
     vector<int> secondRow = secondCursor.getNext();
+    vector<vector<int>> rowBlock(resultTable->maxRowsPerBlock, vector<int>(resultTable->columnCount, 0));
+    int rowCount = 0;
+    int pageCount = 0;
     while (!firstRow.empty()) {
         while (!secondRow.empty()) {
             if (compare(firstRow[firstTableColumnIndex], secondRow[secondTableColumnIndex],
                         parsedQuery.joinBinaryOperator)) {
                 vector<int> resultRow = firstRow;
                 resultRow.insert(resultRow.end(), secondRow.begin(), secondRow.end());
-                resultTable->writeRow(resultRow);
+                rowBlock[rowCount] = resultRow;
+                if (rowCount == resultTable->maxRowsPerBlock - 1) {
+                    bufferManager.writePage(resultTable->tableName, resultTable->blockCount, rowBlock, rowCount);
+                    resultTable->blockCount++;
+                    resultTable->rowsPerBlockCount.push_back(rowCount);
+                    resultTable->rowCount += rowCount;
+                    rowCount = 0;
+                } else {
+                    rowCount++;
+                }
             }
             secondRow = secondCursor.getNext();
         }
         firstRow = firstCursor.getNext();
         secondCursor = secondTableSorted->getCursor();
         secondRow = secondCursor.getNext();
+    }
+    if (rowCount != 0) {
+        bufferManager.writePage(resultTable->tableName, resultTable->blockCount, rowBlock, rowCount);
+        resultTable->rowsPerBlockCount.push_back(rowCount);
+        resultTable->rowCount += rowCount;
+        resultTable->blockCount++;
     }
     resultTable->blockify();
     tableCatalogue.insertTable(resultTable);
