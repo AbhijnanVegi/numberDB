@@ -140,6 +140,14 @@ it to the result table. The function continues this process until all rows of th
 
 Finally, the function writes the result table to disk, deletes the two sorted tables, and returns.
 
+# GROUP BY Command
+
+The provided code meticulously implements a GROUP BY query, encompassing syntactic parsing, semantic validation, and query execution. In the syntactic parsing phase, it diligently ensures the query adheres to the expected structure, meticulously validating the presence and sequence of keywords such as "BY," "FROM," "HAVING," and "RETURN." It also rigorously checks the syntax of aggregation functions, making certain they follow the prescribed format. Upon passing these syntactic checks, the code populates the parsedQuery data structure with critical information, including the result relation's name, grouping attribute, source relation name, aggregation functions, comparison values, and return functions.
+
+The semantic parsing phase is equally comprehensive. It scrutinizes the query for semantic correctness, commencing by verifying the non-existence of the result relation in the table catalog, thus preventing overwriting of existing data. Subsequently, it examines the existence of the specified source relation and ensures that all columns referenced in the query indeed belong to this relation. Any discrepancies in these checks prompt the code to emit informative semantic error messages.
+
+The query execution phase orchestrates the actual grouping and aggregation process. It first creates a sorted copy of the table, utilizing the designated grouping attribute and an ascending sorting strategy. It extracts the indices of the relevant columns, crucial for grouping, aggregation, and return operations. Employing a cursor, the code iterates through the sorted data, calculating aggregation results and satisfying the HAVING clause's conditions. To optimize memory usage, results are written in a block-wise manner. Subsequently, the result table is inserted into the table catalog, temporary tables are expeditiously deleted, and the function concludes its execution. This meticulous and detailed implementation ensures the robust handling of GROUP BY queries in a database context.
+
 ## Contributions
 
 ### Rudransh Pratap Singh
