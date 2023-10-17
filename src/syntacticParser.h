@@ -8,6 +8,7 @@ enum QueryType {
     CROSS,
     DISTINCT,
     EXPORT,
+    GROUPBY,
     INDEX,
     JOIN,
     LIST,
@@ -101,6 +102,17 @@ public:
     string orderByColumnName = "";
     SortingStrategy orderBySortingStrategy;
 
+    string groupByResultRelationName = "";
+    string groupByRelationName = "";
+    string groupByColumnName = "";
+    string groupByAggregationAttribute = "";
+    string groupByAggregationFunction = "";
+    string groupByReturnFunction = "";
+    string groupByReturnAttribute = "";
+    string groupByAggregationCompareVal = "";
+    BinaryOperator groupByBinaryOperator = NO_BINOP_CLAUSE;
+    SortingStrategy groupBySortingStrategy;
+
     string sourceFileName = "";
 
     string renameFromMatrixName = "";
@@ -147,6 +159,8 @@ bool syntacticParseSORT();
 
 bool syntacticParseORDERBY();
 
+bool syntacticParseGROUPBY();
+
 bool syntacticParseSOURCE();
 
 bool syntacticParseLOAD_MATRIX();
@@ -166,3 +180,5 @@ bool syntacticParseTRANSPOSE_MATRIX();
 bool isFileExists(string tableName);
 
 bool isQueryFile(string fileName);
+
+std::optional<BinaryOperator> mapStringToBinOp(const string &s);

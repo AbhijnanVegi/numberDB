@@ -67,6 +67,8 @@ bool syntacticParse() {
             return syntacticParseDISTINCT();
         else if (possibleQueryType == "ORDER")
             return syntacticParseORDERBY();
+        else if(possibleQueryType == "GROUP")
+            return syntacticParseGROUPBY();
         else {
             cout << "SYNTAX ERROR" << endl;
             return false;
@@ -159,4 +161,17 @@ bool isQueryFile(string fileName) {
     fileName = "../data/" + fileName + ".ra";
     struct stat buffer;
     return (stat(fileName.c_str(), &buffer) == 0);
+}
+
+std::optional<BinaryOperator> mapStringToBinOp(const string &s){
+    map<string, BinaryOperator> m = {
+        {"<", LESS_THAN},
+        {">", GREATER_THAN},
+        {">=", GEQ}, {"=>", GEQ},
+        {"<=", LEQ}, {"=<", LEQ},
+        {"==", EQUAL},
+        {"!=", NOT_EQUAL}
+    };
+    if(m.find(s) == m.end()) return std::nullopt;
+    else return m[s];
 }

@@ -21,22 +21,9 @@ bool syntacticParseJOIN() {
 
 
     string binaryOperator = tokenizedQuery[7];
-    if (binaryOperator == "<")
-        parsedQuery.joinBinaryOperator = LESS_THAN;
-    else if (binaryOperator == ">")
-        parsedQuery.joinBinaryOperator = GREATER_THAN;
-    else if (binaryOperator == ">=" || binaryOperator == "=>")
-        parsedQuery.joinBinaryOperator = GEQ;
-    else if (binaryOperator == "<=" || binaryOperator == "=<")
-        parsedQuery.joinBinaryOperator = LEQ;
-    else if (binaryOperator == "==")
-        parsedQuery.joinBinaryOperator = EQUAL;
-    else if (binaryOperator == "!=")
-        parsedQuery.joinBinaryOperator = NOT_EQUAL;
-    else {
-        cout << "SYNTAX ERROR" << endl;
-        return false;
-    }
+    const auto bin_op = mapStringToBinOp(tokenizedQuery[7]);
+    if(!bin_op.has_value()) return cout << "SYNTAX ERROR" << endl, false;
+    else parsedQuery.joinBinaryOperator = bin_op.value();
     return true;
 }
 
@@ -177,4 +164,5 @@ bool compare(int first, int second, BinaryOperator binaryOperator) {
         case NO_BINOP_CLAUSE:
             return false;
     }
+    return false;
 }

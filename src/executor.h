@@ -30,6 +30,8 @@ void executeSORT();
 
 void executeORDERBY();
 
+void executeGROUPBY();
+
 void executeSOURCE();
 
 void executeLOAD_MATRIX();
