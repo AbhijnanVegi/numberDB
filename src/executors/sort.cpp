@@ -138,6 +138,10 @@ void mergeBlocks(Table *table, RowCmp cmp) {
                     pos[minRowIdx] = 0;
                 }
             }
+            if (!rows.empty()) {
+                bufferManager.writePage(newTable, blockNum, rows, rows.size());
+                blockNum++;
+            }
             filesWritten++;
         }
         nruns++;

@@ -140,7 +140,6 @@ void executeJOIN() {
         resultTable->rowCount += rowCount;
         resultTable->blockCount++;
     }
-    resultTable->blockify();
     tableCatalogue.insertTable(resultTable);
     tableCatalogue.deleteTable(firstTableSorted->tableName);
     tableCatalogue.deleteTable(secondTableSorted->tableName);

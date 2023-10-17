@@ -141,7 +141,6 @@ Block Metrics:
 - Blocks Written: `ceil(n/15) * ceil(n/15)`
 - Blocks Accessed: `2 * ceil(n/15) * ceil(n/15)`
 
-
 ### Note
 All the block counts are given based on the input being an nxn matrix and block size = 1
 
