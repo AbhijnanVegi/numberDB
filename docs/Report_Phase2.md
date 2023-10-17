@@ -20,21 +20,11 @@ to create longer sorted runs. Let's break down these phases further, considering
 
 ### Sorting Phase:
 
-During the sorting phase, we go through the blocks of the table to be sorted. We fetch the next `Nb - 1` blocks (or
-fewer
-if there are fewer remaining) into a memory buffer. We also simultaneously write the sorted data back, one block at a
-time, using a block-sized buffer to aid this process.
-
-After loading the blocks into our buffer, we sort them. To support sorting on multiple columns with different sorting
-criteria, we use a custom lambda comparator function. This function takes column indices and multipliers (1 for
-ascending order, -1 for descending) and produces the comparison results needed for sorting using std::sort.
-
-The sorted data is written back into the same blocks, effectively achieving in-place sorting. We write back the data
-block by block in a sequential manner to improve efficiency, avoiding frequent file open, close, and append operations.
+During the sorting phase, we go through the blocks of the table to be sorted., sort them in memory and write back the
+sorted data into the same blocks, effectively achieving in-place sorting.
 
 At the end of this phase, we have multiple sorted runs, with the number of runs being `ceil(B / (Nb - 1))`, where B is
-the
-total block count.
+the total block count.
 
 ### Merging Phase:
 
